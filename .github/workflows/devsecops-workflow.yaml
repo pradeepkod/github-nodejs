@@ -2,6 +2,16 @@ name: Build code, run unit test, run SCA using semgrep security scans for NodeJs
 on: push
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    name: Run unit tests and SAST scan on the source code 
+    steps:
+    - uses: actions/checkout@master
+    - uses: actions/setup-node@v4
+      with:
+        node-version: 20
+        cache: npm
+    - run: npm install
   semgrep:
     name: semgrep-oss/scan
     #needs: Snyk#
@@ -14,6 +24,6 @@ jobs:
       # Fetch project source with GitHub Actions Checkout. Use either v3 or v4.
       - uses: actions/checkout@v4
       # Run the "semgrep scan" command on the command line of the docker image.
-      - run: semgrep ci
+      - run: semgrep ci --pro-languages
         env:
           SEMGREP_APP_TOKEN: ${{ secrets.SEMGREP_APP_TOKEN }}
